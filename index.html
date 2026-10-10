@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PT 트레이닝 노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#171A1E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="PT 노트">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" href="./favicon-32.png" sizes="32x32">
+<style>
+:root{
+  --paper:#F3F5F7; --card:#FFFFFF; --ink:#171A1E; --sub:#5C6570; --line:#DDE2E8;
+  --chest:#D64545; --back:#2E6FD8; --legs:#2F9E62; --shoulder:#DE8A00; --core:#7A5FC7; --arms:#B8446E; --cardio:#5C6570;
+  --chest-bg:#FBEDED; --back-bg:#EAF1FC; --legs-bg:#EAF6EF; --shoulder-bg:#FCF3E3; --core-bg:#F1EDFA; --arms-bg:#FBEBF1; --cardio-bg:#F3F5F7;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:"IBM Plex Sans KR","Pretendard","Apple SD Gothic Neo",sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px 90px}
+
+header{padding:30px 0 14px}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--sub)}
+h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:clamp(32px,6.6vw,50px);line-height:1.1;margin:4px 0 8px}
+h1 .accent{color:var(--chest)}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--sub)}
+.meta b{color:var(--ink);font-weight:700}
+
+.stickybar{position:sticky;top:0;z-index:30;background:var(--paper);padding:10px 0 8px;border-bottom:1px solid var(--line);box-shadow:0 6px 10px -8px rgba(0,0,0,.18)}
+.tabs{display:flex;gap:6px}
+.tab{flex:1;font-family:inherit;font-size:13.5px;font-weight:700;padding:9px 0;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.tab:focus-visible{outline:3px solid var(--back);outline-offset:2px}
+[hidden]{display:none !important}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;display:inline-flex;align-items:center;gap:5px;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--ink);text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:100px;padding:6px 12px;white-space:nowrap;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--c,var(--ink));border-color:var(--c,var(--ink));color:#fff}
+.chips button[aria-pressed="true"] .cd{background:#fff}
+.cd{width:7px;height:7px;border-radius:50%;background:var(--c,var(--ink));flex:none}
+.chips .pl{color:var(--sub);font-weight:500}
+@media(max-width:560px){.chips .pl{display:none}}
+
+/* ---------- 운동 모드 ---------- */
+.gymhead{display:flex;align-items:baseline;gap:10px;margin:18px 0 2px}
+.gymhead h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:24px;color:var(--c,var(--ink))}
+.gymhead span{font-size:12px;color:var(--sub);font-family:"IBM Plex Mono",monospace;font-weight:700}
+.gymsub{font-size:12.5px;color:var(--sub);margin-bottom:10px}
+.gcard{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c,var(--ink));border-radius:12px;margin-top:10px;overflow:hidden}
+.gtop{display:flex;align-items:center;gap:11px;padding:12px 14px}
+.gtop .exi{width:40px;height:40px;flex:none;color:var(--c,var(--ink));background:var(--cbg,var(--paper));border:1px solid var(--line);border-radius:10px;padding:4px}
+.gname{flex:1;min-width:0}
+.gname h3{font-size:15.5px;font-weight:700;line-height:1.3}
+.gname .eq{font-size:11.5px;color:var(--sub);font-weight:500}
+.gbest{text-align:right;flex:none;font-family:"IBM Plex Mono",monospace}
+.gbest b{display:block;font-size:17px;font-weight:700;color:var(--c,var(--ink));line-height:1.1}
+.gbest span{font-size:10.5px;color:var(--sub);font-weight:700}
+.glast{padding:0 14px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.glast .lb{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:700;color:var(--sub);margin-right:2px}
+.set{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:700;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:3px 8px;white-space:nowrap}
+.set .r{color:var(--sub);font-weight:500}
+.gmore{width:100%;font-family:inherit;text-align:left;font-size:12.5px;font-weight:700;color:var(--c,var(--ink));background:var(--cbg,var(--paper));border:none;border-top:1px solid var(--line);padding:9px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.gbody{display:none;padding:2px 14px 12px;background:var(--cbg,var(--paper))}
+.gbody.on{display:block}
+.gbody ul{list-style:none;margin-bottom:8px}
+.gbody li{position:relative;padding-left:15px;font-size:13px;line-height:1.55;margin:5px 0;color:#2A2F36}
+.gbody li::before{content:"";position:absolute;left:2px;top:8px;width:6px;height:6px;border-radius:2px;background:var(--c,var(--ink))}
+.hist{display:grid;gap:5px;margin-top:4px}
+.hrow{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.hrow .date{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;color:var(--sub);min-width:70px}
+.note{font-size:12px;color:var(--sub);margin-top:8px}
+.empty{padding:26px 4px;color:var(--sub);font-size:13.5px}
+
+/* ---------- 부위별 / 수업별 ---------- */
+.part{margin-top:26px;scroll-margin-top:calc(var(--sticky-h,116px) + 10px)}
+.part-head{display:flex;align-items:baseline;gap:10px;padding-bottom:6px;border-bottom:3px solid var(--c,var(--ink))}
+.part-head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:25px;color:var(--c,var(--ink))}
+.part-head .cnt{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:700;color:var(--sub)}
+.session{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden;scroll-margin-top:calc(var(--sticky-h,116px) + 10px)}
+.s-head{padding:14px 16px 10px;border-top:5px solid var(--c,var(--ink))}
+.s-head .when{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:700;color:var(--sub)}
+.s-head h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:20px;margin-top:2px}
+.s-head h3 .pt{color:var(--c,var(--ink));font-size:14px;margin-left:6px}
+.review{padding:11px 16px;background:var(--cbg,var(--paper));font-size:13px;line-height:1.62;color:#2A2F36;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.review .lbl{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--sub);margin-bottom:3px}
+.s-body{padding:6px 16px 14px}
+.s-ex{padding:9px 0 3px;border-top:1px dashed var(--line)}
+.s-ex:first-child{border-top:none}
+.s-ex h4{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700}
+.s-ex .exi{width:30px;height:30px;flex:none;color:var(--c,var(--ink));background:var(--cbg,var(--paper));border:1px solid var(--line);border-radius:8px;padding:3px}
+.s-ex .sets{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.s-cue{font-size:12.5px;color:var(--sub);margin-top:6px;line-height:1.55}
+
+.habits{margin:20px 0 4px;background:var(--ink);color:#fff;border-radius:14px;padding:18px 18px 14px}
+.habits h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:19px;margin-bottom:9px;color:#fff}
+.habits ol{list-style:none;counter-reset:h}
+.habits li{counter-increment:h;display:flex;gap:11px;padding:6px 0;border-top:1px solid rgba(255,255,255,.14);font-size:13.5px;line-height:1.5}
+.habits li::before{content:counter(h,decimal-leading-zero);font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:11px;color:#9AA5B1;padding-top:2px}
+.habits .src{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#8C97A3;white-space:nowrap;margin-left:auto;padding-top:3px}
+@media(max-width:560px){.habits .src{display:none}}
+
+.view{display:none}.view.on{display:block}
+footer{margin-top:34px;font-size:11.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:12px;line-height:1.7}
+.totop{position:fixed;right:14px;bottom:16px;z-index:40;display:none;width:42px;height:42px;border-radius:50%;border:2px solid var(--ink);background:var(--card);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+.totop.on{display:block}
+</style></head>
+<body><div class="wrap">
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="i-bench-bar" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="42" r="4.5" fill="currentColor" stroke="none"/><path d="M20 43 H40"/><path d="M40 43 L52 50 L52 60"/><path d="M8 50 H46"/><path d="M13 50 V60"/><path d="M41 50 V60"/><path d="M28 43 V28"/><path d="M14 26 H44"/><path d="M17 20 V32"/><path d="M41 20 V32"/></g></symbol><symbol id="i-bench-db" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="42" r="4.5" fill="currentColor" stroke="none"/><path d="M20 43 H40"/><path d="M40 43 L52 50 L52 60"/><path d="M8 50 H46"/><path d="M13 50 V60"/><path d="M41 50 V60"/><path d="M28 43 V28"/><path d="M22 27 H34"/><path d="M22 22 V32"/><path d="M34 22 V32"/></g></symbol><symbol id="i-bench-smith" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="42" r="4.5" fill="currentColor" stroke="none"/><path d="M20 43 H40"/><path d="M40 43 L52 50 L52 60"/><path d="M8 50 H46"/><path d="M13 50 V60"/><path d="M41 50 V60"/><path d="M28 43 V28"/><path d="M14 26 H44"/><path d="M12 12 V34" stroke-width="2.5"/><path d="M48 12 V34" stroke-width="2.5"/></g></symbol><symbol id="i-incline" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 54 L36 30"/><path d="M24 54 V62"/><circle cx="40" cy="26" r="4.5" fill="currentColor" stroke="none"/><path d="M21 51 L36 33"/><path d="M20 52 L31 60"/><path d="M31 39 V25"/><path d="M25 23 H37"/><path d="M25 18 V28"/><path d="M37 18 V28"/></g></symbol><symbol id="i-fly" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="17" r="4.5" fill="currentColor" stroke="none"/><path d="M36 23 V44"/><path d="M28 44 H44"/><path d="M36 44 V60"/><path d="M36 28 L20 24"/><path d="M36 28 L52 24"/><path d="M18 18 V30"/><path d="M54 18 V30"/><path d="M20 36 Q36 46 52 36" stroke-width="2.5" stroke-dasharray="3 4"/></g></symbol><symbol id="i-chestpress" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="31" cy="18" r="4.5" fill="currentColor" stroke="none"/><path d="M31 24 V44"/><path d="M25 44 H40"/><path d="M32 44 V60"/><path d="M24 22 V44" stroke-width="2.5"/><path d="M31 29 H50"/><path d="M50 23 V35"/></g></symbol><symbol id="i-latpull" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13 Q36 21 58 13" stroke-width="2.5"/><circle cx="36" cy="27" r="4.5" fill="currentColor" stroke="none"/><path d="M36 32 V46"/><path d="M27 46 H45"/><path d="M36 46 V60"/><path d="M33 33 L21 17"/><path d="M39 33 L51 17"/></g></symbol><symbol id="i-row" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="30" cy="20" r="4.5" fill="currentColor" stroke="none"/><path d="M30 26 V44"/><path d="M30 44 H46"/><path d="M46 44 L52 50"/><path d="M57 36 V54"/><path d="M30 31 H43"/><path d="M43 26 V36"/><path d="M45 31 H55" stroke-width="2.5" stroke-dasharray="3 4"/></g></symbol><symbol id="i-bentrow" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M26 60 V44"/><path d="M26 44 L44 33"/><circle cx="49" cy="31" r="4.5" fill="currentColor" stroke="none"/><path d="M36 38 V50"/><path d="M26 50 H46"/><path d="M29 44 V56"/><path d="M43 44 V56"/></g></symbol><symbol id="i-sarow" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 52 H48"/><path d="M16 52 V60"/><path d="M44 52 V60"/><path d="M24 41 H44"/><circle cx="48" cy="38" r="4.5" fill="currentColor" stroke="none"/><path d="M42 41 V52"/><path d="M26 41 V52"/><path d="M31 42 V47"/><path d="M26 48 H36"/><path d="M26 44 V52"/><path d="M36 44 V52"/></g></symbol><symbol id="i-armpull" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="16" r="4.5" fill="currentColor" stroke="none"/><path d="M27 22 L25 40"/><path d="M25 40 V60"/><path d="M26 26 L44 34"/><path d="M42 30 L46 38"/><path d="M54 10 L44 33" stroke-width="2.5" stroke-dasharray="3 4"/></g></symbol><symbol id="i-dead" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M30 60 V45"/><path d="M30 45 L42 32"/><circle cx="46" cy="29" r="4.5" fill="currentColor" stroke="none"/><path d="M38 36 V50"/><path d="M26 50 H50"/><path d="M30 44 V56"/><path d="M46 44 V56"/></g></symbol><symbol id="i-backext" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M26 60 V44" stroke-width="2.5"/><path d="M18 47 L34 42"/><path d="M15 53 L21 49"/><path d="M34 42 L54 36"/><circle cx="58" cy="34" r="4.5" fill="currentColor" stroke="none"/><path d="M44 39 V46"/></g></symbol><symbol id="i-squat" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="33" cy="15" r="4.5" fill="currentColor" stroke="none"/><path d="M20 24 H48"/><path d="M23 19 V29"/><path d="M45 19 V29"/><path d="M34 21 L31 36"/><path d="M31 36 L43 42"/><path d="M43 42 V58"/></g></symbol><symbol id="i-squat-smith" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="33" cy="15" r="4.5" fill="currentColor" stroke="none"/><path d="M20 24 H48"/><path d="M23 19 V29"/><path d="M45 19 V29"/><path d="M34 21 L31 36"/><path d="M31 36 L43 42"/><path d="M43 42 V58"/><path d="M16 10 V40" stroke-width="2.5"/><path d="M52 10 V40" stroke-width="2.5"/></g></symbol><symbol id="i-legext" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="28" cy="17" r="4.5" fill="currentColor" stroke="none"/><path d="M28 23 V42"/><path d="M28 43 H40"/><path d="M34 43 V60" stroke-width="2.5"/><path d="M26 60 H44" stroke-width="2.5"/><path d="M40 43 L56 34"/><circle cx="55" cy="35" r="2.5" fill="currentColor" stroke="none"/></g></symbol><symbol id="i-legpress" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="55" r="4.5" fill="currentColor" stroke="none"/><path d="M18 52 L32 44"/><path d="M32 44 L44 32"/><path d="M44 32 L51 27"/><path d="M48 20 L60 40"/><path d="M10 60 H60" stroke-width="2.5"/></g></symbol><symbol id="i-lunge" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="34" cy="14" r="4.5" fill="currentColor" stroke="none"/><path d="M34 20 V36"/><path d="M34 36 L46 42"/><path d="M46 42 V58"/><path d="M34 36 L24 48 L28 58"/><path d="M34 25 L29 41"/><path d="M26 42 H32"/><path d="M34 25 L39 41"/><path d="M36 42 H42"/></g></symbol><symbol id="i-add" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="15" r="4.5" fill="currentColor" stroke="none"/><path d="M36 21 V36"/><path d="M36 36 L24 50"/><path d="M24 50 V60"/><path d="M36 36 L48 50"/><path d="M48 50 V60"/><path d="M16 41 L21 45 L16 49" stroke-width="2.5"/><path d="M56 41 L51 45 L56 49" stroke-width="2.5"/></g></symbol><symbol id="i-abd" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="15" r="4.5" fill="currentColor" stroke="none"/><path d="M36 21 V36"/><path d="M36 36 L24 50"/><path d="M24 50 V60"/><path d="M36 36 L48 50"/><path d="M48 50 V60"/><path d="M24 41 L19 45 L24 49" stroke-width="2.5"/><path d="M48 41 L53 45 L48 49" stroke-width="2.5"/></g></symbol><symbol id="i-ohp" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="20" r="4.5" fill="currentColor" stroke="none"/><path d="M36 26 V44"/><path d="M28 44 H44"/><path d="M36 44 V58"/><path d="M36 29 L27 25 L27 14"/><path d="M36 29 L45 25 L45 14"/><path d="M23 14 H31"/><path d="M41 14 H49"/></g></symbol><symbol id="i-ohp-cable" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="20" r="4.5" fill="currentColor" stroke="none"/><path d="M36 26 V44"/><path d="M28 44 H44"/><path d="M36 44 V58"/><path d="M36 29 L27 25 L27 14"/><path d="M36 29 L45 25 L45 14"/><path d="M23 14 H31"/><path d="M41 14 H49"/><path d="M27 13 L15 6" stroke-width="2.5" stroke-dasharray="3 4"/><path d="M45 13 L57 6" stroke-width="2.5" stroke-dasharray="3 4"/></g></symbol><symbol id="i-latraise" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="16" r="4.5" fill="currentColor" stroke="none"/><path d="M36 22 V44"/><path d="M36 44 L30 60"/><path d="M36 44 L42 60"/><path d="M36 27 H16"/><path d="M36 27 H56"/><path d="M16 22 V32"/><path d="M56 22 V32"/></g></symbol><symbol id="i-legraise" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 50 H50"/><path d="M15 50 V60"/><path d="M45 50 V60"/><circle cx="15" cy="43" r="4.5" fill="currentColor" stroke="none"/><path d="M21 45 H38"/><path d="M38 45 L48 26"/><path d="M49 32 L53 26 L57 32" stroke-width="2.5"/></g></symbol><symbol id="i-curl-bar" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="13" r="4.5" fill="currentColor" stroke="none"/><path d="M36 19 V42"/><path d="M31 42 H41"/><path d="M32 42 V58"/><path d="M40 42 V58"/><path d="M32 22 L28 31 L32 35"/><path d="M40 22 L44 31 L40 35"/><path d="M22 35 H50"/><path d="M25 30 V40"/><path d="M47 30 V40"/></g></symbol><symbol id="i-curl-db" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="13" r="4.5" fill="currentColor" stroke="none"/><path d="M36 19 V42"/><path d="M31 42 H41"/><path d="M32 42 V58"/><path d="M40 42 V58"/><path d="M32 22 L27 31 L31 35"/><path d="M40 22 L45 31 L41 35"/><path d="M25 31 V39"/><path d="M31 31 V39"/><path d="M41 31 V39"/><path d="M47 31 V39"/></g></symbol><symbol id="i-pushdown" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M54 10 V56" stroke-width="2.5"/><path d="M46 10 H58" stroke-width="2.5"/><path d="M52 14 L41 27" stroke-width="2.5" stroke-dasharray="3 4"/><circle cx="27" cy="17" r="4.5" fill="currentColor" stroke="none"/><path d="M28 23 L30 44"/><path d="M24 44 H37"/><path d="M27 44 V58"/><path d="M35 44 V58"/><path d="M29 27 L37 31 L40 42"/></g></symbol><symbol id="i-rowerg" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 56 H62" stroke-width="2.5"/><path d="M14 50 H50" stroke-width="2.5"/><circle cx="26" cy="29" r="4.5" fill="currentColor" stroke="none"/><path d="M28 35 L22 47"/><path d="M22 47 L38 47"/><path d="M38 47 L46 40"/><path d="M29 33 H46"/><path d="M46 28 V38"/></g></symbol><symbol id="i-legcurl" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 46 H42" stroke-width="2.5"/><path d="M12 46 V58" stroke-width="2.5"/><path d="M38 46 V58" stroke-width="2.5"/><circle cx="12" cy="38" r="4.5" fill="currentColor" stroke="none"/><path d="M17 41 H40"/><path d="M40 41 L52 41"/><path d="M52 41 L56 28"/><circle cx="56" cy="26" r="4" fill="currentColor" stroke="none"/></g></symbol><symbol id="i-glute" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 34 V54" stroke-width="2.5"/><path d="M8 54 H22" stroke-width="2.5"/><circle cx="14" cy="32" r="4.5" fill="currentColor" stroke="none"/><path d="M19 35 L34 28"/><path d="M34 28 L46 42"/><path d="M46 42 V58"/><path d="M26 20 H46"/><path d="M29 15 V25"/><path d="M43 15 V25"/></g></symbol><symbol id="i-crunch" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 50 H50" stroke-width="2.5"/><path d="M13 50 V60" stroke-width="2.5"/><path d="M45 50 V60" stroke-width="2.5"/><path d="M14 44 H30"/><path d="M30 44 L38 36"/><circle cx="42" cy="33" r="4.5" fill="currentColor" stroke="none"/><path d="M30 44 L44 46 L48 34"/></g></symbol><symbol id="i-fly-db" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 50 H46" stroke-width="2.5"/><path d="M13 50 V60" stroke-width="2.5"/><path d="M41 50 V60" stroke-width="2.5"/><circle cx="14" cy="42" r="4.5" fill="currentColor" stroke="none"/><path d="M20 43 H40"/><path d="M40 43 L52 50 L52 58"/><path d="M27 43 L20 30"/><path d="M27 43 L34 30"/><path d="M15 27 H25"/><path d="M29 27 H39"/></g></symbol><symbol id="i-triext" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 30 V54" stroke-width="2.5"/><path d="M20 54 H40" stroke-width="2.5"/><circle cx="28" cy="30" r="4.5" fill="currentColor" stroke="none"/><path d="M29 36 V48"/><path d="M29 48 H44"/><path d="M44 48 V58"/><path d="M30 33 L34 20 L26 12"/><path d="M21 9 H31"/><path d="M22 15 H30"/></g></symbol><symbol id="i-pullup" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 12 H58" stroke-width="2.5"/><path d="M20 12 V22" stroke-width="2.5"/><path d="M52 12 V22" stroke-width="2.5"/><path d="M27 13 L30 26"/><path d="M45 13 L42 26"/><circle cx="36" cy="24" r="4.5" fill="currentColor" stroke="none"/><path d="M36 30 V44"/><path d="M36 44 L30 56"/><path d="M36 44 L44 54"/><path d="M26 46 H48" stroke-width="2.5"/></g></symbol><symbol id="i-tbar" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 54 L44 26" stroke-width="2.5"/><path d="M22 47 V60" stroke-width="2.5"/><path d="M40 33 V60" stroke-width="2.5"/><circle cx="46" cy="22" r="4.5" fill="currentColor" stroke="none"/><path d="M20 48 L41 28"/><path d="M30 40 L36 48 L48 44"/><path d="M50 40 H62" stroke-width="2.5"/><path d="M54 36 V48"/><path d="M60 36 V48"/></g></symbol><symbol id="i-facepull" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 10 V60" stroke-width="2.5"/><path d="M42 10 H60" stroke-width="2.5"/><path d="M50 22 L41 24" stroke-width="2.5" stroke-dasharray="3 4"/><circle cx="24" cy="22" r="4.5" fill="currentColor" stroke="none"/><path d="M24 28 V44"/><path d="M20 44 L18 58"/><path d="M28 44 L30 58"/><path d="M24 26 L34 20 L44 24"/><path d="M24 30 L34 28 L44 24"/></g></symbol><symbol id="i-rdl" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="44" cy="16" r="4.5" fill="currentColor" stroke="none"/><path d="M42 22 L34 34"/><path d="M34 34 L36 48"/><path d="M36 48 V60"/><path d="M35 31 L33 44"/><path d="M22 44 H46" stroke-width="2.5"/><path d="M25 39 V49"/><path d="M43 39 V49"/></g></symbol><symbol id="i-isorow" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M40 12 V58" stroke-width="2.5"/><path d="M30 58 H52" stroke-width="2.5"/><circle cx="30" cy="22" r="4.5" fill="currentColor" stroke="none"/><path d="M31 28 V44"/><path d="M27 44 H38"/><path d="M30 44 V58"/><path d="M32 30 L44 26"/><path d="M32 34 L44 30"/><path d="M14 26 H24" stroke-width="2.5"/><path d="M19 22 V34" stroke-width="2.5"/></g></symbol><symbol id="i-hipthrust" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 30 V50" stroke-width="2.5"/><path d="M8 50 H20" stroke-width="2.5"/><circle cx="13" cy="26" r="4.5" fill="currentColor" stroke="none"/><path d="M18 30 L32 34"/><path d="M32 34 L44 46"/><path d="M44 46 V58"/><path d="M24 22 H42"/><path d="M27 17 V27"/><path d="M39 17 V27"/></g></symbol><symbol id="i-bulgarian" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M40 44 H62" stroke-width="2.5"/><path d="M44 44 V58" stroke-width="2.5"/><path d="M58 44 V58" stroke-width="2.5"/><circle cx="28" cy="14" r="4.5" fill="currentColor" stroke="none"/><path d="M28 20 V34"/><path d="M28 34 L21 46"/><path d="M21 46 V58"/><path d="M28 34 L42 41"/><path d="M42 41 L49 42"/><path d="M24 24 V38"/><path d="M32 24 V38"/></g></symbol><symbol id="i-calf" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="36" cy="14" r="4.5" fill="currentColor" stroke="none"/><path d="M36 20 V38"/><path d="M30 38 V50"/><path d="M42 38 V50"/><path d="M25 56 L30 50 L35 56"/><path d="M37 56 L42 50 L47 56"/><path d="M14 56 H58" stroke-width="2.5"/><path d="M18 38 V25" stroke-width="2.5"/><path d="M14 29 L18 24 L22 29" stroke-width="2.5"/></g></symbol><symbol id="i-plank" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 54 H64" stroke-width="2.5"/><circle cx="15" cy="30" r="4.5" fill="currentColor" stroke="none"/><path d="M20 33 L46 40"/><path d="M46 40 L57 52"/><path d="M20 34 L18 48"/><path d="M13 48 H26"/></g></symbol><symbol id="i-revfly" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M36 26 V58" stroke-width="2.5"/><circle cx="36" cy="16" r="4.5" fill="currentColor" stroke="none"/><path d="M30 29 H42"/><path d="M33 29 L19 38"/><path d="M39 29 L53 38"/><path d="M15 33 V45"/><path d="M57 33 V45"/></g></symbol><symbol id="i-pullover" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 48 H56" stroke-width="2.5"/><path d="M19 48 V58" stroke-width="2.5"/><path d="M51 48 V58" stroke-width="2.5"/><circle cx="24" cy="40" r="4.5" fill="currentColor" stroke="none"/><path d="M30 42 H48"/><path d="M48 42 L56 48"/><path d="M31 42 L21 28"/><path d="M13 24 H27"/><path d="M16 19 V29"/><path d="M24 19 V29"/></g></symbol><symbol id="i-pushup" viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 56 H64" stroke-width="2.5"/><circle cx="15" cy="26" r="4.5" fill="currentColor" stroke="none"/><path d="M20 29 L45 38"/><path d="M45 38 L58 54"/><path d="M21 30 V53"/><path d="M38 35 V53"/></g></symbol></svg>
+<header>
+  <div class="kicker">PERSONAL TRAINING LOG</div>
+  <h1>PT 트레이닝 <span class="accent">노트</span></h1>
+  <div class="meta">
+    <span>기간 <b>2026.07 – 10.06</b></span>
+    <span>총 <b>27회 수업</b></span>
+    <span>분할 <b>가슴 5 · 등 9 · 하체 9 · 어깨 3 · 팔 1</b></span>
+  </div>
+</header>
+
+<div class="stickybar">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabA" aria-selected="true"  onclick="show('gym',this)">운동 모드</button>
+    <button class="tab" role="tab" id="tabB" aria-selected="false" onclick="show('byPart',this)">부위별</button>
+    <button class="tab" role="tab" id="tabC" aria-selected="false" onclick="show('bySession',this)">수업별</button>
+  </div>
+  <div class="chips" id="partChips"><button style="--c:var(--chest)" aria-pressed="true" onclick="pickPart('가슴',this)"><i class="cd"></i>가슴</button><button style="--c:var(--back)" aria-pressed="false" onclick="pickPart('등',this)"><i class="cd"></i>등</button><button style="--c:var(--legs)" aria-pressed="false" onclick="pickPart('하체',this)"><i class="cd"></i>하체</button><button style="--c:var(--shoulder)" aria-pressed="false" onclick="pickPart('어깨',this)"><i class="cd"></i>어깨</button><button style="--c:var(--arms)" aria-pressed="false" onclick="pickPart('팔',this)"><i class="cd"></i>팔</button><button style="--c:var(--core)" aria-pressed="false" onclick="pickPart('코어',this)"><i class="cd"></i>코어</button><button style="--c:var(--cardio)" aria-pressed="false" onclick="pickPart('유산소',this)"><i class="cd"></i>유산소</button></div>
+  <nav class="chips" id="jumpPart" hidden><button type="button" style="--c:var(--chest)" onclick="goto('p-chest')"><i class="cd"></i>가슴</button><button type="button" style="--c:var(--back)" onclick="goto('p-back')"><i class="cd"></i>등</button><button type="button" style="--c:var(--legs)" onclick="goto('p-legs')"><i class="cd"></i>하체</button><button type="button" style="--c:var(--shoulder)" onclick="goto('p-shoulder')"><i class="cd"></i>어깨</button><button type="button" style="--c:var(--arms)" onclick="goto('p-arms')"><i class="cd"></i>팔</button><button type="button" style="--c:var(--core)" onclick="goto('p-core')"><i class="cd"></i>코어</button><button type="button" style="--c:var(--cardio)" onclick="goto('p-cardio')"><i class="cd"></i>유산소</button></nav>
+</div>
+
+<div id="gym" class="view on">
+  <div class="gymhead"><h2 id="gymTitle">가슴</h2><span id="gymCnt"></span></div>
+  <p class="gymsub">부위를 고르면 그 부위 종목과 <b>직전 세트</b>가 뜹니다. 카드를 누르면 코치 큐와 전체 기록이 열립니다.</p>
+  <div id="gymBody"></div>
+  <section class="habits">
+    <h2>코치님이 반복해서 강조한 핵심 습관</h2>
+    <ol><li><span>근력으로 들지 말고 <b>주동근의 움직임</b>에 집중 — 근육이 움직이는 위에 무게 저항을 얹는 것</span><span class="src">1회차</span></li><li><span>지치더라도 <b>자세와 템포를 끝까지 유지</b> — 빨리 끝내려 하지 말 것</span><span class="src">2·5·9·10회차</span></li><li><span>쓰려는 근육이 붙은 관절만 움직이고 <b>나머지 관절은 단단히 고정</b></span><span class="src">9회차</span></li><li><span>손목–팔꿈치는 대각선이 아닌 <b>수직으로 무게 전달</b></span><span class="src">4·16회차</span></li><li><span>패드에 기대는 동작은 <b>견갑골 고정</b>이 먼저 — 지치면 셋업이 풀림</span><span class="src">6·12회차</span></li><li><span>등 운동 전 <b>맨손 힙힌지 연습</b> — 천골 아치 잡고 요추 꺾지 않기</span><span class="src">3회차</span></li><li><span>등 운동 시 <b>광배 텐션이 풀리지 않는 지점</b>까지만 반복 · 엄지 힘 빼서 전완 개입 줄이기</span><span class="src">7·11회차</span></li><li><span>개인 운동에서 <b>등 운동과 상체 스트레칭에 시간을 더 투자</b></span><span class="src">16회차</span></li><li><span>데드리프트·로우에서 <b>바벨이 몸에서 멀어지면</b> 광배 힘이 풀리고 둔근 운동이 됨</span><span class="src">17회차</span></li><li><span><b>좌·우 균일하게</b> 힘 주기 — 스쿼트·랫풀다운에서 왼쪽으로 쏠리는 경향</span><span class="src">18·19회차</span></li><li><span><b>왼쪽 약세</b>가 반복 관찰됨 — 벤치프레스 왼다리 미는 힘, 덤벨 어깨 균형</span><span class="src">26·27회차</span></li><li><span>고중량 다음 세트에서 <b>힘과 자세가 한 번에 무너짐</b> — 올리기 전 자세부터 점검</span><span class="src">27회차</span></li></ol>
+  </section>
+</div>
+
+<div id="byPart" class="view"></div>
+<div id="bySession" class="view"></div>
+
+<footer>
+  · 트레이너 앱 기록(1~27회차) 기반. 세트 표기는 <b>무게(kg) × 횟수</b>.<br>
+  · 미확인: 1회차 날짜, 8회차 스미스 머신 스쿼트 세트.
+</footer>
+</div>
+<button class="totop" id="totop" aria-label="맨 위로" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+var D = {"sessions": [{"n": 1, "date": "", "dow": "", "time": "", "part": "가슴", "review": "보디빌딩식으로 근육이 움직이는 방식이 아직 익숙하지 않은 모습. 근비대를 위해서는 근육이 잘 움직이고 쓰이는 운동 위에 무게 저항을 얹는 것이므로, 근력으로 들기보다 <b>주동근의 움직임에 집중</b>.", "ex": [{"name": "벤치 프레스", "eq": "바벨 · 벤치", "part": "가슴", "sets": [[40, 15], [50, 13], [50, 15], [50, 15], [55, 10]], "txt": "", "cues": ["그립 너비는 이완 시 팔꿈치가 90°보다 살짝 안쪽이 되게 — 어깨 부담 최소화", "바벨이 닿는 위치는 늑골이 아니라 <b>대흉근 유륜 위치</b>", "가슴이 늘어나고 모이는 느낌을 인지하며 진행"], "note": "", "assist": false}, {"name": "인클라인 벤치 프레스", "eq": "벤치 · 덤벨", "part": "가슴", "sets": [[12, 15], [18, 15], [18, 15], [18, 13]], "txt": "", "cues": ["플라이처럼 벌리고 모으는 느낌 ✕ — <b>팔꿈치가 몸 뒤로 내려가며 대흉근을 늘려준다</b>는 느낌으로"], "note": "", "assist": false}, {"name": "플라이", "eq": "버터플라이 머신", "part": "가슴", "sets": [[30, 15], [30, 20]], "txt": "", "cues": ["지칠 때 전면어깨·등이 앞으로 말림 — <b>등과 어깨는 패드에서 떨어지지 않게</b> 유지"], "note": "", "assist": false}]}, {"n": 2, "date": "07.23", "dow": "목", "time": "6:00–7:00", "part": "하체", "review": "고관절의 굴곡·신전이 제대로 안 되어 지칠 때 일어나면서 상체가 숙여지고 허리로 들게 됨. <b>상체 각도를 유지한 상태에서 발바닥으로 밀어서</b> 일어날 것.", "ex": [{"name": "레그 익스텐션", "eq": "레버리지 머신", "part": "하체", "sets": [[20, 18], [30, 15], [45, 13], [55, 12]], "txt": "", "cues": ["골반의 움직임을 통해 <b>대퇴직근까지</b> 사용하기"], "note": "", "assist": false}, {"name": "스쿼트", "eq": "바벨", "part": "하체", "sets": [[20, 15], [40, 15], [40, 12], [40, 12]], "txt": "", "cues": ["상체가 앞으로 쏠린다 = 고관절 굴곡 없이 엉덩이만 뒤로 빼는 것 — <b>벌어진 골반 사이로 상체가 들어가는 느낌</b>으로 앉기"], "note": "", "assist": false}, {"name": "시티드 레그 프레스", "eq": "레그 프레스 머신", "part": "하체", "sets": [[60, 15], [82.5, 15], [97.5, 10], [97.5, 12]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "힙 어덕션", "eq": "이너타이 머신", "part": "하체", "sets": [[20, 15], [25, 20], [30, 20]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 3, "date": "07.27", "dow": "월", "time": "6:00–7:00", "part": "등", "review": "천골 아치가 잡히지 않아 힙힌지 자세에서 요추를 과하게 꺾음. 다음 등 운동 때는 <b>맨손으로 힙힌지 연습 후 무게 추가</b> 예정.", "ex": [{"name": "랫 풀다운", "eq": "케이블 머신", "part": "등", "sets": [[25, 15], [25, 15], [30, 15], [35, 13]], "txt": "", "cues": ["손목이 더 내려갈 때까지 수축 ✕ — <b>하방회전</b>에 신경 쓰고 팔꿈치·손목이 일직선인 지점까지만"], "note": "", "assist": false}, {"name": "벤트 오버 로우", "eq": "바벨", "part": "등", "sets": [[20, 15], [30, 15], [30, 15], [40, 15], [40, 15]], "txt": "", "cues": ["무게중심을 살짝 앞에 두어 <b>광배근과 바벨이 수직선상</b>에 놓이게", "그 상태에서 팔꿈치를 뒤로 보낸다는 느낌으로 광배근 운동"], "note": "", "assist": false}, {"name": "백 익스텐션", "eq": "로만 체어", "part": "등", "sets": [[0, 15], [0, 15], [0, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "시티드 로우", "eq": "케이블 머신", "part": "등", "sets": [[25, 15], [30, 15], [35, 15], [45, 15]], "txt": "", "cues": ["몸 전체가 움직이는 느낌 ✕ — 발로 패드를 강하게 밀어 골반이 접히는 힘으로 기립근을 받친 뒤 <b>날개뼈와 광배근만</b> 움직이기"], "note": "", "assist": false}]}, {"n": 4, "date": "07.29", "dow": "수", "time": "6:00–7:00", "part": "어깨", "review": "보디빌딩식 운동은 무게를 수직으로 받아 주동근에 온전히 얹는 것이 중요 — <b>손목과 팔꿈치가 대각선이 아닌 수직으로</b> 무게가 전달되게.", "ex": [{"name": "시티드 숄더 프레스", "eq": "벤치 · 덤벨", "part": "어깨", "sets": [[5, 20], [5, 20], [7, 15], [10, 15], [10, 15], [10, 15]], "txt": "", "cues": ["등을 벤치에 기댄 뒤 날개뼈를 살짝 올려 <b>전면삼각근에 긴장</b>을 건 다음, 외회전으로 팔꿈치가 앞으로 나오는 포지션 만들기", "덤벨을 모으는 느낌보다 <b>위로 밀면서</b> 수축"], "note": "", "assist": false}, {"name": "시티드 숄더 프레스", "eq": "케이블 머신", "part": "어깨", "sets": [[30, 15], [30, 15], [30, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "래터럴 레이즈", "eq": "덤벨", "part": "어깨", "sets": [[2, 40], [3, 30], [3, 20], [3, 20], [3, 25]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 5, "date": "07.31", "dow": "금", "time": "6:00–7:00", "part": "하체", "review": "지난 하체 때보다 운동 템포도 일정하고 골반 쓰임도 좋았음. 지치더라도 빨리 끝낸다는 느낌보다 <b>일정한 템포</b>를 유지할 것.", "ex": [{"name": "힙 어덕션", "eq": "이너타이 머신", "part": "하체", "sets": [[20, 17], [25, 15], [30, 15], [35, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "스쿼트", "eq": "바벨", "part": "하체", "sets": [[20, 15], [40, 15], [40, 15], [50, 10]], "txt": "", "cues": ["비복근·발목이 타이트하면 뒷꿈치가 뜸 — 비복근과 발목 가동범위 먼저 확보"], "note": "", "assist": false}, {"name": "레그 프레스", "eq": "레그 프레스 머신", "part": "하체", "sets": [[50, 15], [120, 10], [120, 12], [140, 10], [140, 10]], "txt": "", "cues": ["다리를 내렸을 때 골반이 후방경사되면 엉덩이가 말리며 요추까지 말림 — <b>요추 말리기 전까지만</b> 내리기"], "note": "", "assist": false}]}, {"n": 6, "date": "08.03", "dow": "월", "time": "6:00–7:00", "part": "가슴", "review": "지치면 처음 셋업 자세가 풀리고 협력근을 많이 쓰려 함. 패드에 기대서 하는 동작에서는 <b>견갑골을 잘 고정</b>할 것.", "ex": [{"name": "플라이", "eq": "버터플라이 머신", "part": "가슴", "sets": [[25, 18], [35, 15], [45, 15], [45, 15]], "txt": "", "cues": ["상완골이 외회전되며 어깨가 들리지 않도록, 처음 내회전·흉곽 드는 셋업을 풀지 말 것"], "note": "", "assist": false}, {"name": "벤치 프레스", "eq": "스미스 머신", "part": "가슴", "sets": [[20, 15], [20, 15], [30, 10], [30, 10], [30, 10]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "체스트 프레스", "eq": "레버리지 머신", "part": "가슴", "sets": [[50, 15], [35, 15], [40, 15], [40, 10]], "txt": "", "cues": ["팔로 당기고 미는 느낌 ✕ — 플라이처럼 <b>대흉근이 옆으로 늘어나고 모인다</b>는 느낌, 이두근을 잘 활용"], "note": "", "assist": false}]}, {"n": 7, "date": "08.04", "dow": "화", "time": "6:00–7:00", "part": "등", "review": "데드리프트에서 천추 아치가 잘 잡힘. 아직 무게중심을 앞에 둔 채 일정하게 진행되지는 않지만 광배로 잘 버티며 내려감. <b>광배에 힘이 들어간 셋업이 무너지지 않도록 텐션 기억</b>.", "ex": [{"name": "암 풀다운", "eq": "케이블 머신", "part": "등", "sets": [[15, 20], [20, 20], [20, 22], [25, 20]], "txt": "", "cues": ["로프 그립을 이용하면 상완골을 몸 뒤로 보낼 수 있어 광배근의 더 깊은 수축이 가능"], "note": "", "assist": false}, {"name": "데드리프트", "eq": "바벨", "part": "등", "sets": [[20, 15], [40, 15], [40, 15], [50, 15]], "txt": "", "cues": ["무게중심을 살짝 앞으로 — 내려가는 동작에서 광배근과 바벨이 수직선상", "내려갈 때 무릎을 많이 구부리지 말 것"], "note": "", "assist": false}, {"name": "시티드 로우 (언더핸드)", "eq": "케이블 머신", "part": "등", "sets": [[20, 20], [20, 20], [25, 20]], "txt": "", "cues": ["이완 시 <b>광배근의 길이가 늘어나야</b> 함 — 길이 변화 없이 상체만 앞으로 움직이면 자극이 일어나지 않음"], "note": "", "assist": false}]}, {"n": 8, "date": "08.05", "dow": "수", "time": "6:00–7:00", "part": "하체", "review": "스미스 머신 스쿼트는 무게중심 집중이 덜 필요하니 <b>고관절 굴곡·신전에 집중</b>. 엉덩이는 뒤로, 무릎은 앞으로 자연스럽게, 무게중심은 수직 아래로.", "ex": [{"name": "싱글 레그 익스텐션", "eq": "케이블 머신", "part": "하체", "sets": [[15, 15], [20, 15], [20, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "스쿼트", "eq": "스미스 머신", "part": "하체", "sets": [], "txt": "", "cues": ["엉덩이가 뒤로 빠지지 않은 채 앉으면 무릎이 앞으로 많이 나가며 무릎 관절 부하가 커짐"], "note": "세트 기록은 스크린샷 범위 밖", "assist": false}]}, {"n": 9, "date": "08.10", "dow": "월", "time": "6:00–7:00", "part": "가슴", "review": "무게를 더 올릴 수 있었지만, 주동근이 지치면 편한 자세로 돌아가는 습관이 남아 있어 적정 무게 <b>10~15회로 힘들 때도 자세가 무너지지 않는 연습</b>. 쓰려는 근육이 붙은 관절만 움직이고 나머지는 단단히 고정.", "ex": [{"name": "플라이", "eq": "버터플라이 머신", "part": "가슴", "sets": [[25, 15], [35, 15], [40, 15]], "txt": "", "cues": ["견착 유지 — 손을 모을 때 날개뼈·어깨 뒤가 패드에서 떨어져 앞으로 쏠리지 않게", "가슴 운동이므로 팔꿈치와 이두근을 잘 사용해 가슴 움직임을 느끼기"], "note": "", "assist": false}, {"name": "벤치 프레스", "eq": "벤치 · 덤벨", "part": "가슴", "sets": [[10, 15], [14, 15], [20, 15], [24, 13], [24, 13]], "txt": "", "cues": ["덤벨은 가동범위가 자유로우니 이완 시 대흉근에 저항을 걸며 더 늘려주기", "단, 견갑골을 더 모으면서까지 늘어나게 하지 말 것 — 집중이 풀리며 등만 접힘"], "note": "", "assist": false}, {"name": "아이소 래터럴 벤치 프레스", "eq": "머신", "part": "가슴", "sets": [[20, 15], [30, 13], [30, 15], [30, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "레그 힙 레이즈", "eq": "벤치", "part": "코어", "sets": [[0, 20], [0, 20], [0, 20], [0, 15]], "txt": "", "cues": ["다리를 모으지 말고 <b>벌려서</b> 허벅지 내전근 개입을 줄이고 <b>아래 복직근</b>에 집중"], "note": "", "assist": false}]}, {"n": 10, "date": "08.11", "dow": "화", "time": "6:00–6:50", "part": "하체", "review": "스쿼트에서 고관절·둔근 텐션은 좋았지만 레그 프레스 중량에서 골반 후방경사로 둔근 저항이 죽음. <b>텐션이 풀리는 지점까지 내려갈 필요 없음</b> — 골반 각도가 변하지 않게. 템포가 빨라져도 자세 유지에 집중한 모습 좋았음!", "ex": [{"name": "레그 익스텐션", "eq": "레버리지 머신", "part": "하체", "sets": [[20, 20], [30, 15], [40, 13], [50, 15], [60, 12]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "레그 프레스", "eq": "레그 프레스 머신", "part": "하체", "sets": [[90, 15], [130, 12], [130, 12], [130, 12]], "txt": "", "cues": ["무릎이 안쪽으로 모이지 않게, 골반이 둥글게 말리지 않도록 <b>둔근의 저항</b>이 중요"], "note": "", "assist": false}, {"name": "런지", "eq": "덤벨", "part": "하체", "sets": [[0, 15], [10, 13], [10, 13]], "txt": "", "cues": ["편측 운동이라 균형·고관절 접기가 어려움 — <b>틀어지지 않게 내려가는 것과 깊이감</b>이 포인트"], "note": "", "assist": false}, {"name": "힙 어브덕션", "eq": "아웃타이 머신", "part": "하체", "sets": [[40, 15], [45, 15], [45, 15]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 11, "date": "08.14", "dow": "금", "time": "6:00–6:50", "part": "등", "review": "광배에 힘이 잘 안 걸려 <b>가동범위가 짧더라도 광배 힘이 풀리지 않는 지점을 반복</b>. 그립은 잘 잡되 엄지 쪽에 힘이 너무 실려 <b>전완근에 힘이 많이 가지 않도록</b>.", "ex": [{"name": "랫 풀다운", "eq": "케이블 머신", "part": "등", "sets": [[20, 25], [30, 20], [30, 20], [30, 20]], "txt": "", "cues": ["손목·팔꿈치를 동일선상으로 당기고, 마지막에 팔꿈치가 뒤로 빠지지 않도록 광배 수축에 집중", "수행 내내 광배에 힘이 어느 정도 걸린 상태를 유지"], "note": "", "assist": false}, {"name": "벤트 오버 로우", "eq": "바벨", "part": "등", "sets": [[20, 25], [20, 20], [25, 20], [25, 20]], "txt": "", "cues": ["상부승모근 말고 <b>광배근으로 최대한 당기기</b>"], "note": "", "assist": false}, {"name": "싱글 암 벤트 오버 로우", "eq": "벤치 · 덤벨", "part": "등", "sets": [[10, 15], [14, 15], [14, 15]], "txt": "", "cues": ["골반과 내전근에 하중을 싣고 살짝 뒤로 기울여 <b>광배 하단부</b>가 수축·이완되게"], "note": "", "assist": false}]}, {"n": 12, "date": "08.18", "dow": "화", "time": "6:00–6:50", "part": "가슴", "review": "가슴은 근력은 좋지만 근육 길이에 대한 움직임이 조금 밋밋하고, 겉 지방층이 많아 운동 중 근육을 만져보면 강직도가 잘 느껴지지 않음. 우선 <b>체지방 감량을 병행</b>하면서 확인 예정.", "ex": [{"name": "벤치 프레스", "eq": "바벨 · 벤치", "part": "가슴", "sets": [[20, 15], [40, 15], [60, 10], [80, 5], [80, 5], [60, 10]], "txt": "", "cues": ["패드에 누울 때 상체가 한쪽으로 기울지 않도록 <b>앉은 상태에서 일자로</b> 누울 것"], "note": "", "assist": false}, {"name": "체스트 프레스", "eq": "레버리지 머신", "part": "가슴", "sets": [[40, 15], [50, 12], [50, 12], [50, 12], [40, 25]], "txt": "", "cues": ["협력근 힘을 아예 빼면 자세 유지가 안 됨 — 날개뼈 고정한 채 <b>가슴을 천장으로 계속 들기</b>"], "note": "", "assist": false}, {"name": "플라이", "eq": "벤치 · 덤벨", "part": "가슴", "sets": [[6, 15], [8, 15], [8, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "크런치", "eq": "벤치", "part": "코어", "sets": [[0, 25], [0, 25], [0, 20], [0, 20]], "txt": "", "cues": ["<b>흉추만 말아</b> 상복부를 수축시킬 것"], "note": "", "assist": false}]}, {"n": 13, "date": "08.19", "dow": "수", "time": "6:00–7:00", "part": "팔", "review": "이두 운동은 <b>무게를 이두근에 얹는 연습</b>을 하고 근육이 최대로 수축·이완되도록 할 것. 케이블 트라이셉스 푸시다운은 <b>상체를 눌러준다는 느낌</b>의 자세 연습이 필요함.", "ex": [{"name": "바벨 컬", "eq": "바벨", "part": "팔", "sets": [[10, 15], [15, 15], [15, 15], [15, 15]], "txt": "", "cues": ["무게를 <b>이두근에 얹는</b> 연습 — 최대로 수축하고 이완되게", "주먹을 약간 앞으로 내린다는 느낌으로 이완해 <b>상완이두근이 늘어나게</b>"], "note": "", "assist": false}, {"name": "덤벨 컬", "eq": "덤벨", "part": "팔", "sets": [[8, 15], [8, 15], [8, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "트라이셉스 푸시다운", "eq": "케이블 머신", "part": "팔", "sets": [[30, 15], [40, 15], [40, 20], [40, 20]], "txt": "", "cues": ["꼬리뼈 쪽 허리만 아치를 잡고 <b>등은 약간 말아준</b> 뒤, 무게중심을 앞으로 줘서 <b>상체로 케이블을 누르는</b> 자세 만들기", "이 자세가 되어야 핀로드 무게가 온전히 삼두근으로 전달됨"], "note": "", "assist": false}, {"name": "시티드 트라이셉스 익스텐션", "eq": "벤치 · 덤벨", "part": "팔", "sets": [[10, 15], [14, 15], [14, 15], [14, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "로잉", "eq": "로잉 머신", "part": "유산소", "sets": [], "txt": "0.6km · 02:08", "cues": [], "note": "", "assist": false}]}, {"n": 14, "date": "08.21", "dow": "금", "time": "6:00–6:50", "part": "하체", "review": "이완 동작에서 <b>주동근의 힘이 풀리지 않도록</b> 할 것. 레그 프레스에서 발바닥 무게중심이 앞꿈치 쪽에 실리면 고관절이 잘 접히지 못하므로, <b>뒷꿈치 쪽에 살짝 무게중심</b>을 실어 고관절이 잘 접히게.", "ex": [{"name": "라잉 레그 컬", "eq": "레버리지 머신", "part": "하체", "sets": [[20, 20], [25, 20], [25, 20], [30, 15]], "txt": "", "cues": ["이완 동작에서 <b>햄스트링에 힘이 빠지지 않게</b>, 발목에 힘이 과하게 들어가지 않도록"], "note": "", "assist": false}, {"name": "시티드 레그 프레스", "eq": "레그 프레스 머신", "part": "하체", "sets": [[60, 20], [90, 15], [100, 15], [100, 15]], "txt": "", "cues": ["내리는 동작에서 무릎이 모이지 않게", "뒷꿈치가 뜨는 건 고관절이 안 접히고 무릎을 밀며 앉기 때문 — <b>발목과 고관절이 같이 접힌다</b>는 느낌으로 앉으며 대퇴직근 활용", "발바닥 무게중심은 <b>뒷꿈치 쪽으로 살짝</b>"], "note": "", "assist": false}, {"name": "몬스터 글루트", "eq": "전용 머신", "part": "하체", "sets": [[10, 20], [20, 20], [20, 20], [20, 20]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 15, "date": "08.25", "dow": "화", "time": "6:00–7:00", "part": "등", "review": "견갑골 하방회전 힘이 부족하다는 건 <b>하부승모근이 약하고 대흉근·소흉근이 타이트</b>하다는 뜻 — 구조적으로 등 운동 시 광배근 느낌을 찾기 어려움. 상체 운동 전 <b>전면삼각근·소흉근 이완 + 외회전 스트레칭</b>으로 날개뼈가 더 아래로 잘 당겨지도록.", "ex": [{"name": "어시스티드 풀업", "eq": "레버리지 머신", "part": "등", "sets": [[55, 15], [50, 15], [50, 10], [50, 10]], "txt": "", "cues": ["날개뼈가 하강회전함과 <b>동시에 어깨도 내려오고</b> 팔꿈치가 굽혀지면서, 상완골·어깨·어깨뼈가 <b>하나의 축</b>으로 당겨져야 함"], "note": "보조 중량이라 숫자가 낮을수록 난이도가 높음", "assist": true}, {"name": "라잉 로우", "eq": "T바", "part": "등", "sets": [[10, 15], [20, 15], [20, 15], [20, 15], [10, 10]], "txt": "", "cues": ["대원근·중부승모근을 타겟할 때는 <b>팔꿈치를 내전하여 위로 올려주고</b> 그대로 당겨 상부 라인이 수축되게"], "note": "", "assist": false}, {"name": "크런치", "eq": "벤치", "part": "코어", "sets": [[0, 20], [0, 20], [0, 20]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 16, "date": "08.27", "dow": "목", "time": "6:00–7:00", "part": "어깨", "review": "소흉근·전면삼각근·대흉근이 잡고 있는 힘이 세다 보니 상완골을 외회전하려 하면 유지하기 힘든 자세가 나옴. 개인 운동에서는 <b>등 운동과 상체 스트레칭에 시간과 집중을 더</b> 투자하고, 프레스에서는 <b>대각선 방향으로 내리고 밀지 않도록</b>.", "ex": [{"name": "시티드 숄더 프레스", "eq": "벤치 · 덤벨", "part": "어깨", "sets": [[5, 20], [5, 15], [5, 15], [7, 25]], "txt": "", "cues": ["팔꿈치가 뒤로 빠지지 않게 외회전을 유지 — 내릴 때 <b>전거근이 버티는 힘</b>이 약하면 날개뼈가 안쪽으로 모이며 등이 접히고 전면삼각근 힘이 확 풀림", "프레스에서 <b>대각선 방향으로 내리고 밀지 않도록</b>"], "note": "", "assist": false}, {"name": "시티드 숄더 프레스", "eq": "케이블 머신", "part": "어깨", "sets": [[20, 20], [25, 25], [30, 20]], "txt": "", "cues": ["손목과 팔꿈치가 <b>머신의 궤적에서 크게 벗어나지 않도록</b>"], "note": "", "assist": false}, {"name": "페이스 풀", "eq": "케이블 머신", "part": "어깨", "sets": [[20, 20], [20, 20], [25, 20]], "txt": "", "cues": ["후면삼각근 수축 시 날개뼈가 많이 모이면서 상부승모근·능형근·중앙승모근이 같이 수축하면 후면삼각근에 부하가 안 걸림", "<b>팔뼈만 이용해</b> 후면삼각근을 수축하고, 힘이 풀리지 않게 이완하는 연습"], "note": "", "assist": false}]}, {"n": 17, "date": "08.31", "dow": "월", "time": "6:00–7:00", "part": "등", "review": "등 운동에서 허리 아치를 잡는 연습을 계속했고, 로우는 <b>광배근 길이가 늘어나고 단축되는 데</b> 집중. 데드리프트·바벨로우에서 바벨이 몸에서 멀어지면 중심을 맞추려 둔근·햄스트링 힘이 크게 들어가 <b>둔근 타겟의 스티프 레그드 데드리프트</b>가 됨. 상체를 약간 숙여 바벨을 수직 아래로 몸에 붙이며 내려가야 광배 힘이 유지됨. 오늘 허리 아치가 풀리지 않게 집중한 점이 좋았습니다!", "ex": [{"name": "랫 풀다운", "eq": "케이블 머신", "part": "등", "sets": [[20, 23], [25, 18], [30, 18], [35, 15]], "txt": "", "cues": ["수축 힘이 부족하면 팔 개입이 늘고 어깨가 앞으로 말림 — <b>상완골·어깨·견갑골이 하나의 축</b>이라 생각하고 한 번에 당겨 강하게 수축"], "note": "", "assist": false}, {"name": "루마니안 데드리프트", "eq": "바벨", "part": "등", "sets": [[20, 15], [40, 15], [50, 13], [60, 9]], "txt": "", "cues": ["꼬리뼈 아치가 안 잡히면 기립근·요추 부담이 커짐", "골반을 <b>경첩처럼 접고</b> 햄스트링·둔근을 이완시키며, 엉덩이는 뒤로 안 빠지게 상체를 숙이면서 <b>광배근으로 바벨을 버티기</b>", "바벨이 몸에서 멀어지면 광배 신전 기능이 떨어져 힘이 풀림"], "note": "", "assist": false}, {"name": "아이소 래터럴 로우", "eq": "머신", "part": "등", "sets": [[20, 15], [20, 15], [25, 13], [25, 15]], "txt": "", "cues": ["하지로 <b>발판을 잘 지지</b>해 골반·허리 아치가 풀리지 않게 — 그래야 광배근 길이가 늘어나고 단축됨"], "note": "", "assist": false}]}, {"n": 18, "date": "09.03", "dow": "목", "time": "6:00–7:00", "part": "하체", "review": "스쿼트에서 올라올 때 <b>왼쪽 둔근을 먼저 사용</b>하며 올라오고 바벨 기울기도 왼쪽으로 쏠려 있음. 고개는 너무 들지 않도록 하고 시선은 골반·무릎·바닥 정도를 바라보는 정도로.", "ex": [{"name": "레그 익스텐션", "eq": "레버리지 머신", "part": "하체", "sets": [[20, 20], [30, 15], [40, 15], [55, 10]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "스쿼트", "eq": "바벨", "part": "하체", "sets": [[20, 15], [20, 15], [40, 15], [50, 10], [50, 10]], "txt": "", "cues": ["앉을 때 발뒤꿈치 쪽이 늘어나지 않고 <b>발 안쪽으로 모이며</b> 앉는 형태 — 스쿼트 전 비복근(종아리)을 풀고 둔근·고관절 쓰는 연습부터"], "note": "", "assist": false}, {"name": "힙 스러스트", "eq": "레버리지 머신", "part": "하체", "sets": [[10, 18], [20, 15], [30, 15], [30, 15]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 19, "date": "09.08", "dow": "화", "time": "6:00–7:00", "part": "등", "review": "바벨로우에서 상부승모근이 많이 쓰인 이유는 두 가지 — ① 광배근이 빨리 지쳐 갯수를 채우려고 상부승모근을 끌어다 씀 ② 가동범위가 짧게 움직여 오히려 승모근 긴장이 계속 유지됨. 다음 바벨로우 때는 수축할 때 <b>조금 더 골반 쪽으로 파워있게 당겨</b> 광배근 참여도를 높일 것.", "ex": [{"name": "랫 풀다운", "eq": "케이블 머신", "part": "등", "sets": [[25, 20], [30, 15], [30, 13], [35, 13]], "txt": "", "cues": ["세트 중반부터 바가 <b>왼쪽으로 더 회전되어</b> 당겨짐 = 오른쪽보다 왼쪽 힘을 더 사용한다는 뜻", "한쪽 손이 지치더라도 양손으로 하는 운동에서는 <b>좌·우 균일하게</b> 힘을 주려 노력할 것"], "note": "", "assist": false}, {"name": "벤트 오버 로우", "eq": "바벨", "part": "등", "sets": [[20, 20], [30, 20], [30, 20], [30, 20]], "txt": "", "cues": ["키포인트는 등 상부 근육이 쓰이는 과정에서 <b>얼마나 광배근에 집중하느냐</b> — 아래에서 위로 당기면 상부 근육이 수축함", "무게중심을 약간 앞으로 주고 살짝 <b>몸 대각선 뒤로 힘있게 당겨</b> 광배근 수축이 완전하게 일어나도록"], "note": "", "assist": false}, {"name": "아이소 래터럴 로우", "eq": "머신", "part": "등", "sets": [[10, 15], [15, 15], [15, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "데드리프트", "eq": "바벨", "part": "등", "sets": [[20, 15], [40, 15], [60, 10], [60, 10], [70, 10]], "txt": "", "cues": ["처음 바닥에서 바벨을 뽑을 때 <b>힌지 체간이 무너지며 허리로 들면 안 됨</b> — 자세 세팅이 무너지지 않게 뽑기"], "note": "", "assist": false}]}, {"n": 20, "date": "09.09", "dow": "수", "time": "6:00–7:00", "part": "하체", "review": "스쿼트와 레그 프레스에서 힘이 들면 상체가 앞으로 숙여지고 무릎이 모이면서 앉게 됨. <b>골반·무릎 각도가 좁아지지 않도록</b> 신경 쓸 것.", "ex": [{"name": "몬스터 글루트", "eq": "전용 머신", "part": "하체", "sets": [[10, 20], [20, 20], [30, 18], [30, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "스쿼트", "eq": "바벨", "part": "하체", "sets": [[20, 20], [40, 15], [50, 15], [55, 10], [55, 10]], "txt": "", "cues": ["무릎 방향이 <b>두 번째·세 번째 발가락을 향하게</b> 앉았다 일어나야 무릎에 부담 없이 고관절 가동범위를 확보한 상태로 진행 가능"], "note": "", "assist": false}, {"name": "레그 프레스", "eq": "레그 프레스 머신", "part": "하체", "sets": [[130, 12], [170, 8], [170, 8], [130, 10]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "힙 스러스트", "eq": "레버리지 머신", "part": "하체", "sets": [[10, 20], [30, 20], [40, 10], [40, 10]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "라잉 레그 컬", "eq": "레버리지 머신", "part": "하체", "sets": [[25, 15], [30, 12], [40, 15]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 21, "date": "09.15", "dow": "화", "time": "6:00–7:00", "part": "등", "review": "파워적인 측면은 좋으니 <b>무게를 치면서도 광배근이라는 주동근의 집중을 잃지 않는</b> 식으로 진행했음. 로우 계열이나 데드리프트에서는 <b>하지, 그리고 힌지의 유지</b>가 많이 중요.", "ex": [{"name": "풀업", "eq": "맨몸", "part": "등", "sets": [[0, 10], [0, 9], [0, 8], [0, 8]], "txt": "", "cues": ["날개뼈가 모이면서 광배근 수축감을 잘 모르겠으면, 팔은 바에 걸어만 주고 <b>날개뼈만 위아래로 움직이는 스캡 풀업</b>으로 연습 추천"], "note": "", "assist": false}, {"name": "루마니안 데드리프트", "eq": "바벨", "part": "등", "sets": [[20, 15], [60, 12], [80, 10], [80, 8], [40, 15]], "txt": "", "cues": ["무게중심이 뒤로 엉덩이 쪽으로 보내지지 않도록 <b>중립 중심에서 살짝 앞으로</b> 숙이기", "요추가 둥글게 말리지 않도록 <b>꼬리뼈와 엉덩이 살짝 위쪽에 텐션 유지</b>"], "note": "", "assist": false}, {"name": "싱글 암 벤트 오버 로우", "eq": "벤치 · 덤벨", "part": "등", "sets": [[16, 20], [20, 15], [20, 12], [20, 10]], "txt": "", "cues": ["처음 시작하면 광배근 가동범위가 짧게 진행됨 — 근력은 충분히 뒷받침되니 <b>가동범위를 더 늘리고 템포는 조금 더 천천히 일정하게</b>"], "note": "", "assist": false}, {"name": "레그 힙 레이즈", "eq": "벤치", "part": "코어", "sets": [[0, 20], [0, 15], [0, 15]], "txt": "", "cues": ["다리를 올려 아랫 복직근을 수축할 때는 <b>골반만 살짝 만다는 느낌</b>으로만 수축"], "note": "", "assist": false}]}, {"n": 22, "date": "09.17", "dow": "목", "time": "6:00–7:00", "part": "하체", "review": "스쿼트에서 앉았다 일어날 때 바가 <b>대각선 앞으로 궤적이 생기는 건 무릎을 많이 쓴다</b>는 의미. 무게중심이 가운데에서 크게 벗어나지 않도록 엉덩이와 무릎을 이용해 균형을 맞출 것.", "ex": [{"name": "스쿼트", "eq": "바벨", "part": "하체", "sets": [[20, 20], [40, 15], [50, 10], [60, 10], [60, 10], [40, 10]], "txt": "", "cues": ["워밍업에서 앉을 때 <b>뒷꿈치가 안쪽으로 회전</b>됨 — 발목 가동범위에 신경 쓸 것", "바벨 궤적이 사선이 아닌 <b>수직으로</b> 이동하도록 무게중심을 중앙에"], "note": "", "assist": false}, {"name": "불가리안 스플릿 스쿼트", "eq": "벤치 · 케틀벨", "part": "하체", "sets": [[0, 15], [10, 15], [10, 15]], "txt": "", "cues": ["무릎이 발끝보다 <b>안쪽으로 모이지 않도록</b>"], "note": "", "assist": false}, {"name": "몬스터 글루트", "eq": "전용 머신", "part": "하체", "sets": [[20, 20], [30, 20], [30, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "카프 레이즈", "eq": "맨몸", "part": "하체", "sets": [[0, 40], [0, 30]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "플랭크", "eq": "맨몸", "part": "코어", "sets": [], "txt": "24초 · 30초", "cues": [], "note": "", "assist": false}]}, {"n": 23, "date": "09.22", "dow": "화", "time": "6:00–7:00", "part": "등", "review": "바벨로우에서 <b>하지와 힌지가 안정적으로 잘 유지</b>된 자세였음. 다만 지칠 때 광배근이 아니라 상부승모근이 수축하며 당기는 자세가 됨 — 오늘은 중량감이 있어 자세가 금방 무너지는 느낌을 받으셨을 수 있음. 지금 중량을 다루며 몸에 익히면 점점 <b>주동근으로 당기는 습관</b>이 들 것.", "ex": [{"name": "랫 풀다운 (뉴트럴 그립)", "eq": "케이블 머신", "part": "등", "sets": [[20, 20], [20, 15], [30, 15], [35, 12], [40, 12]], "txt": "", "cues": ["마지막에 어깨가 앞으로 돌며 팔꿈치가 뒤로 빠져 손잡이가 몸통에서 멀어지지 않도록 — <b>등 뒤로 관통하듯</b> 케이블을 당기기"], "note": "", "assist": false}, {"name": "벤트 오버 로우", "eq": "바벨", "part": "등", "sets": [[20, 20], [30, 15], [40, 15], [40, 18], [40, 15]], "txt": "", "cues": ["<b>협력근의 과한 긴장을 풀고</b> 주동근에 집중해서 당기는 연습이 필요"], "note": "", "assist": false}, {"name": "아이소 래터럴 로우", "eq": "머신", "part": "등", "sets": [[10, 15], [15, 15], [15, 15]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "로잉", "eq": "로잉 머신", "part": "유산소", "sets": [], "txt": "0.7km · 02:09", "cues": [], "note": "", "assist": false}]}, {"n": 24, "date": "09.23", "dow": "수", "time": "6:00–7:00", "part": "하체", "review": "초반 스쿼트에서 발목이 안쪽으로 돌아가며 앉았지만, 워밍업 이후에는 발바닥이 지면에 잘 붙은 상태로 발목·뒷꿈치가 잘 늘어났고 전반적인 템포도 일정했음. 다만 무게가 올라갔을 때 고관절 신전으로 일어나는 힘이 아니라 <b>무릎 쪽 힘으로 일어나는 느낌</b>이 있어, 고중량에서 골반 부근 근육을 쓰는 연습이 필요. 하체 볼륨과 강도를 제일 높게 진행했는데 잘 수행해 주셨습니다!", "ex": [{"name": "라잉 레그 컬", "eq": "레버리지 머신", "part": "하체", "sets": [[20, 20], [30, 15], [35, 12]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "레그 익스텐션", "eq": "레버리지 머신", "part": "하체", "sets": [[30, 15], [40, 12], [50, 13]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "스쿼트", "eq": "스미스 머신", "part": "하체", "sets": [[20, 15], [40, 10], [50, 8], [60, 6], [60, 8]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "레그 프레스", "eq": "레그 프레스 머신", "part": "하체", "sets": [[90, 12], [130, 10], [130, 12], [170, 8], [170, 8]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "몬스터 글루트", "eq": "전용 머신", "part": "하체", "sets": [[20, 15], [30, 15], [40, 15], [40, 17]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 25, "date": "09.29", "dow": "화", "time": "6:00–7:00", "part": "등", "review": "바벨로우 자세는 이전보다 <b>하지의 안정성이 많이 좋아짐</b>. 언더그립은 광배근 하부까지 공략하기 위해 쓰는 그립. 광배근의 느낌은 수축할 때보다 <b>이완할 때 더 오는 것이 맞으므로</b>, 이완 과정에서 허리 아치가 풀리지 않도록 주의.", "ex": [{"name": "어시스티드 풀업", "eq": "레버리지 머신", "part": "등", "sets": [[50, 15], [40, 10], [40, 10], [35, 10]], "txt": "", "cues": ["등을 수축하는 과정에서 어깨가 앞으로 회전하지 않도록 <b>날개뼈 하방회전</b> 자세에 신경"], "note": "보조 중량이라 숫자가 낮을수록 난이도가 높음", "assist": true}, {"name": "벤트 오버 로우 (언더 그립)", "eq": "바벨", "part": "등", "sets": [[20, 15], [40, 15], [50, 15], [50, 15], [55, 12]], "txt": "", "cues": ["언더그립은 <b>광배근 하부</b>까지 공략하기 위한 그립"], "note": "", "assist": false}, {"name": "루마니안 데드리프트", "eq": "덤벨", "part": "등", "sets": [[16, 15], [24, 12], [24, 12], [24, 12]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "레그 힙 레이즈", "eq": "벤치", "part": "코어", "sets": [[0, 20], [0, 15], [0, 15], [0, 12]], "txt": "", "cues": [], "note": "", "assist": false}]}, {"n": 26, "date": "10.02", "dow": "금", "time": "6:00–7:00", "part": "어깨", "review": "숄더프레스 머신은 고정돼 있어 날개뼈 한쪽이 뜬 느낌이 덜하지만, <b>덤벨에서는 균형이 깨진 게 확연히 보임</b>. 어깨 운동은 분절 운동 — 어깨 근육 외 협력근을 최소화하고 주동근에 집중하는 실력을 많이 요하므로, <b>견고한 패킹 자세가 흐트러지지 않는</b> 연습이 필요.", "ex": [{"name": "리버스 플라이", "eq": "버터플라이 머신", "part": "어깨", "sets": [[20, 15], [25, 20], [25, 20], [25, 20]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "시티드 숄더 프레스", "eq": "벤치 · 덤벨", "part": "어깨", "sets": [[6, 20], [8, 20], [10, 20], [12, 15]], "txt": "", "cues": ["좌·우 견갑골이 패드에 올바르게 밀착되도록 <b>골반과 하체부터 정렬</b>을 맞출 것"], "note": "", "assist": false}, {"name": "시티드 숄더 프레스", "eq": "케이블 머신", "part": "어깨", "sets": [[25, 20], [35, 15], [35, 15], [30, 10]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "래터럴 레이즈", "eq": "덤벨", "part": "어깨", "sets": [[2, 30], [2, 30], [2, 30], [2, 30]], "txt": "", "cues": ["승모근이 쓰이지 않도록 <b>날개뼈를 위로 살짝 올려줄 것</b>"], "note": "", "assist": false}]}, {"n": 27, "date": "10.06", "dow": "화", "time": "6:00–7:00", "part": "가슴", "review": "고중량 직전 세트까지는 템포와 자세가 뒤틀리지 않고 잘 진행되는데, 항상 <b>그다음 세트에서 무게를 더 얹으면 힘이 금방 빠지고 자세도 무너짐</b>. 대흉근을 수축할 때 전면삼각근의 과한 개입은 피할 것.", "ex": [{"name": "벤치 프레스", "eq": "바벨 · 벤치", "part": "가슴", "sets": [[20, 20], [40, 15], [60, 10], [80, 5], [70, 7], [60, 8]], "txt": "", "cues": ["왼쪽 다리가 오른쪽보다 각도가 넓고 밀어주는 힘이 빠져 있음 — <b>다리 넓이를 너무 벌리지 말고 살짝 모아줄 것</b>"], "note": "", "assist": false}, {"name": "인클라인 벤치 프레스", "eq": "스미스 머신", "part": "가슴", "sets": [[40, 10], [60, 4], [50, 5], [60, 8], [60, 8]], "txt": "", "cues": ["윗가슴이 수축될 때 팔꿈치가 위로 들리며 어깨 개입이 커지지 않도록 <b>팔꿈치는 고정한 상태</b>에서 수축"], "note": "", "assist": false}, {"name": "풀오버", "eq": "벤치 · 덤벨", "part": "가슴", "sets": [[10, 15], [16, 12], [22, 12], [22, 10]], "txt": "", "cues": [], "note": "", "assist": false}, {"name": "푸시업", "eq": "맨몸", "part": "가슴", "sets": [[0, 8], [0, 10]], "txt": "", "cues": [], "note": "", "assist": false}]}], "habits": [{"t": "근력으로 들지 말고 <b>주동근의 움직임</b>에 집중 — 근육이 움직이는 위에 무게 저항을 얹는 것", "src": "1회차"}, {"t": "지치더라도 <b>자세와 템포를 끝까지 유지</b> — 빨리 끝내려 하지 말 것", "src": "2·5·9·10회차"}, {"t": "쓰려는 근육이 붙은 관절만 움직이고 <b>나머지 관절은 단단히 고정</b>", "src": "9회차"}, {"t": "손목–팔꿈치는 대각선이 아닌 <b>수직으로 무게 전달</b>", "src": "4·16회차"}, {"t": "패드에 기대는 동작은 <b>견갑골 고정</b>이 먼저 — 지치면 셋업이 풀림", "src": "6·12회차"}, {"t": "등 운동 전 <b>맨손 힙힌지 연습</b> — 천골 아치 잡고 요추 꺾지 않기", "src": "3회차"}, {"t": "등 운동 시 <b>광배 텐션이 풀리지 않는 지점</b>까지만 반복 · 엄지 힘 빼서 전완 개입 줄이기", "src": "7·11회차"}, {"t": "개인 운동에서 <b>등 운동과 상체 스트레칭에 시간을 더 투자</b>", "src": "16회차"}, {"t": "데드리프트·로우에서 <b>바벨이 몸에서 멀어지면</b> 광배 힘이 풀리고 둔근 운동이 됨", "src": "17회차"}, {"t": "<b>좌·우 균일하게</b> 힘 주기 — 스쿼트·랫풀다운에서 왼쪽으로 쏠리는 경향", "src": "18·19회차"}, {"t": "<b>왼쪽 약세</b>가 반복 관찰됨 — 벤치프레스 왼다리 미는 힘, 덤벨 어깨 균형", "src": "26·27회차"}, {"t": "고중량 다음 세트에서 <b>힘과 자세가 한 번에 무너짐</b> — 올리기 전 자세부터 점검", "src": "27회차"}], "parts": ["가슴", "등", "하체", "어깨", "팔", "코어", "유산소"], "key": {"가슴": "chest", "등": "back", "하체": "legs", "어깨": "shoulder", "팔": "arms", "코어": "core", "유산소": "cardio"}};
+var K = D.key;
+
+/* ---------- 아이콘 매핑 ---------- */
+function icon(name, eq){
+  var t = name + " " + eq;
+  if(t.indexOf("싱글 암 벤트")>=0) return "i-sarow";
+  if(t.indexOf("아이소 래터럴 로우")>=0) return "i-isorow";
+  if(t.indexOf("아이소 래터럴")>=0) return "i-chestpress";
+  if(t.indexOf("인클라인")>=0) return "i-incline";
+  if(t.indexOf("풀업")>=0) return "i-pullup";
+  if(t.indexOf("불가리안")>=0) return "i-bulgarian";
+  if(t.indexOf("카프 레이즈")>=0) return "i-calf";
+  if(t.indexOf("플랭크")>=0) return "i-plank";
+  if(t.indexOf("리버스 플라이")>=0) return "i-revfly";
+  if(t.indexOf("풀오버")>=0) return "i-pullover";
+  if(t.indexOf("푸시업")>=0) return "i-pushup";
+  if(t.indexOf("라잉 로우")>=0) return "i-tbar";
+  if(t.indexOf("라잉 레그 컬")>=0) return "i-legcurl";
+  if(t.indexOf("루마니안")>=0) return "i-rdl";
+  if(t.indexOf("페이스 풀")>=0) return "i-facepull";
+  if(t.indexOf("힙 스러스트")>=0) return "i-hipthrust";
+  if(t.indexOf("몬스터 글루트")>=0) return "i-glute";
+  if(t.indexOf("시티드 트라이셉스")>=0) return "i-triext";
+  if(t.indexOf("트라이셉스 푸시다운")>=0) return "i-pushdown";
+  if(t.indexOf("바벨 컬")>=0) return "i-curl-bar";
+  if(t.indexOf("덤벨 컬")>=0) return "i-curl-db";
+  if(t.indexOf("로잉")>=0) return "i-rowerg";
+  if(t.indexOf("크런치")>=0) return "i-crunch";
+  if(t.indexOf("레그 힙 레이즈")>=0) return "i-legraise";
+  if(t.indexOf("벤치 프레스")>=0){
+    if(t.indexOf("스미스")>=0) return "i-bench-smith";
+    if(t.indexOf("덤벨")>=0) return "i-bench-db";
+    return "i-bench-bar";
+  }
+  if(t.indexOf("플라이")>=0) return (t.indexOf("덤벨")>=0) ? "i-fly-db" : "i-fly";
+  if(t.indexOf("체스트 프레스")>=0) return "i-chestpress";
+  if(t.indexOf("랫 풀다운")>=0) return "i-latpull";
+  if(t.indexOf("벤트 오버 로우")>=0) return "i-bentrow";
+  if(t.indexOf("시티드 로우")>=0) return "i-row";
+  if(t.indexOf("암 풀다운")>=0) return "i-armpull";
+  if(t.indexOf("데드리프트")>=0) return "i-dead";
+  if(t.indexOf("백 익스텐션")>=0) return "i-backext";
+  if(t.indexOf("레그 익스텐션")>=0) return "i-legext";
+  if(t.indexOf("레그 프레스")>=0) return "i-legpress";
+  if(t.indexOf("스쿼트")>=0) return (t.indexOf("스미스")>=0) ? "i-squat-smith" : "i-squat";
+  if(t.indexOf("런지")>=0) return "i-lunge";
+  if(t.indexOf("힙 어덕션")>=0) return "i-add";
+  if(t.indexOf("힙 어브덕션")>=0) return "i-abd";
+  if(t.indexOf("숄더 프레스")>=0) return (t.indexOf("케이블")>=0) ? "i-ohp-cable" : "i-ohp";
+  if(t.indexOf("래터럴 레이즈")>=0) return "i-latraise";
+  return "i-squat";
+}
+function svg(id, cls){ return '<svg class="exi'+(cls||'')+'" aria-hidden="true"><use href="#'+id+'"/></svg>'; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+/* ---------- 세트 렌더 ---------- */
+function setChips(ex){
+  if(ex.txt) return '<span class="set">'+ex.txt+'</span>';
+  if(!ex.sets.length) return '<span class="set">기록 없음</span>';
+  return ex.sets.map(function(s){
+    return s[0]===0 ? '<span class="set">'+s[1]+'회</span>'
+                    : '<span class="set">'+s[0]+'<span class="r">×'+s[1]+'</span></span>';
+  }).join("");
+}
+
+/* ---------- 종목별 집계 ---------- */
+var CAT = {};      // key: name|eq  -> {name, eq, part, assist, note, hist:[{n,date,sets,txt}], cues:[{t,src}]}
+D.sessions.forEach(function(s){
+  s.ex.forEach(function(e){
+    var k = e.name + "|" + e.eq;
+    if(!CAT[k]) CAT[k] = {name:e.name, eq:e.eq, part:e.part, assist:e.assist, note:"", hist:[], cues:[]};
+    var c = CAT[k];
+    c.part = e.part;
+    if(e.note) c.note = e.note;
+    if(e.assist) c.assist = true;
+    c.hist.push({n:s.n, date:s.date, sets:e.sets, txt:e.txt});
+    e.cues.forEach(function(t){
+      if(!c.cues.some(function(x){return x.t===t;})) c.cues.push({t:t, src:s.n+"회차"});
+    });
+  });
+});
+var LIST = Object.keys(CAT).map(function(k){ return CAT[k]; });
+LIST.forEach(function(c){
+  var w = [];
+  c.hist.forEach(function(h){ h.sets.forEach(function(s){ if(s[0]>0) w.push(s[0]); }); });
+  c.max  = w.length ? Math.max.apply(null, w) : 0;
+  c.min  = w.length ? Math.min.apply(null, w) : 0;
+  c.last = c.hist[c.hist.length-1];
+});
+
+/* ---------- 운동 모드 ---------- */
+var curPart = "가슴";
+function renderGym(){
+  var box = document.getElementById("gymBody");
+  var items = LIST.filter(function(c){ return c.part===curPart; })
+                  .sort(function(a,b){ return b.last.n - a.last.n; });
+  var kc = K[curPart];
+  document.getElementById("gymTitle").textContent = curPart;
+  document.getElementById("gymTitle").parentNode.style.setProperty("--c","var(--"+kc+")");
+  document.getElementById("gymCnt").textContent = items.length + "개 종목";
+  if(!items.length){ box.innerHTML = '<p class="empty">아직 기록이 없습니다.</p>'; return; }
+
+  box.innerHTML = items.map(function(c, i){
+    var best = c.assist ? (c.min + "kg") : (c.max ? c.max + "kg" : "맨몸");
+    var bestLb = c.assist ? "보조 최저" : (c.max ? "최고" : "");
+    var hist = c.hist.slice().reverse().map(function(h){
+      var d = h.date ? h.date : "";
+      return '<div class="hrow"><span class="date">'+(d? d+" · ":"")+h.n+'회</span>'
+           + setChips({sets:h.sets, txt:h.txt}) + '</div>';
+    }).join("");
+    var cues = c.cues.length
+      ? '<ul>' + c.cues.map(function(q){ return '<li>'+q.t+' <span class="date">'+q.src+'</span></li>'; }).join("") + '</ul>'
+      : '';
+    return ''
+    + '<div class="gcard" style="--c:var(--'+kc+');--cbg:var(--'+kc+'-bg)">'
+    +   '<div class="gtop">' + svg(icon(c.name, c.eq))
+    +     '<div class="gname"><h3>'+esc(c.name)+'</h3><div class="eq">'+esc(c.eq)+'</div></div>'
+    +     '<div class="gbest"><b>'+best+'</b><span>'+bestLb+'</span></div>'
+    +   '</div>'
+    +   '<div class="glast"><span class="lb">지난 '+(c.last.date||(c.last.n+"회차"))+'</span>' + setChips(c.last) + '</div>'
+    +   '<button class="gmore" onclick="tog('+i+')" aria-expanded="false">'
+    +     '<span>코치 큐 '+c.cues.length+'개 · 전체 기록 '+c.hist.length+'회</span><span id="ar'+i+'">▾</span></button>'
+    +   '<div class="gbody" id="gb'+i+'">' + cues + '<div class="hist">'+hist+'</div>'
+    +     (c.note ? '<p class="note">※ '+c.note+'</p>' : '')
+    +   '</div>'
+    + '</div>';
+  }).join("");
+}
+function tog(i){
+  var b = document.getElementById("gb"+i);
+  b.classList.toggle("on");
+  document.getElementById("ar"+i).textContent = b.classList.contains("on") ? "▴" : "▾";
+  b.previousElementSibling.setAttribute("aria-expanded", b.classList.contains("on"));
+}
+function pickPart(p, btn){
+  curPart = p;
+  document.querySelectorAll("#partChips button").forEach(function(b){
+    b.setAttribute("aria-pressed", b===btn ? "true" : "false");
+  });
+  renderGym();
+  window.scrollTo({top:0});
+}
+
+/* ---------- 부위별 ---------- */
+function renderByPart(){
+  var html = D.parts.map(function(p){
+    var items = LIST.filter(function(c){ return c.part===p; });
+    if(!items.length) return "";
+    var kc = K[p];
+    var ns = []; D.sessions.forEach(function(s){ if(s.ex.some(function(e){return e.part===p;})) ns.push(s.n); });
+    return '<section id="p-'+kc+'" class="part" style="--c:var(--'+kc+');--cbg:var(--'+kc+'-bg)">'
+      + '<div class="part-head"><h2>'+p+'</h2><span class="cnt">'+ns.join(" · ")+'회차</span></div>'
+      + items.map(function(c){
+          var best = c.assist ? ("보조 "+c.min+"kg") : (c.max ? "최고 "+c.max+"kg" : "맨몸");
+          var cues = c.cues.length ? '<div class="gbody on">'
+              + '<ul>'+c.cues.map(function(q){return '<li>'+q.t+' <span class="date">'+q.src+'</span></li>';}).join("")+'</ul>'
+              + '<div class="hist">'+c.hist.map(function(h){
+                  return '<div class="hrow"><span class="date">'+(h.date? h.date+" · ":"")+h.n+'회</span>'+setChips(h)+'</div>';
+                }).join("")+'</div>'
+              + (c.note ? '<p class="note">※ '+c.note+'</p>' : '') + '</div>'
+            : '<div class="gbody on"><div class="hist">'+c.hist.map(function(h){
+                  return '<div class="hrow"><span class="date">'+(h.date? h.date+" · ":"")+h.n+'회</span>'+setChips(h)+'</div>';
+                }).join("")+'</div>'+(c.note ? '<p class="note">※ '+c.note+'</p>' : '')+'</div>';
+          return '<div class="gcard" style="--c:var(--'+kc+');--cbg:var(--'+kc+'-bg)">'
+            + '<div class="gtop">'+svg(icon(c.name,c.eq))
+            + '<div class="gname"><h3>'+esc(c.name)+'</h3><div class="eq">'+esc(c.eq)+'</div></div>'
+            + '<div class="gbest"><b>'+(c.assist?c.min+"kg":(c.max?c.max+"kg":"맨몸"))+'</b><span>'+(c.assist?"보조 최저":(c.max?"최고":""))+'</span></div>'
+            + '</div>' + cues + '</div>';
+        }).join("")
+      + '</section>';
+  }).join("");
+  document.getElementById("byPart").innerHTML = html;
+}
+
+/* ---------- 수업별 ---------- */
+function renderBySession(){
+  var html = D.sessions.slice().reverse().map(function(s){
+    var kc = K[s.part];
+    var when = s.date ? (s.date+" ("+s.dow+") · "+s.time) : "7월 (날짜 미확인)";
+    return '<div id="s'+s.n+'" class="session" style="--c:var(--'+kc+');--cbg:var(--'+kc+'-bg)">'
+      + '<div class="s-head"><span class="when">'+when+'</span><h3>'+s.n+'번째 수업<span class="pt">'+s.part+'</span></h3></div>'
+      + (s.review ? '<div class="review"><span class="lbl">코치 총평</span>'+s.review+'</div>' : '')
+      + '<div class="s-body">' + s.ex.map(function(e){
+          return '<div class="s-ex"><h4>'+svg(icon(e.name,e.eq)," s")+'<span>'+esc(e.name)+' ('+esc(e.eq)+')</span></h4>'
+            + '<div class="sets">'+setChips(e)+'</div>'
+            + (e.cues.length ? '<p class="s-cue">'+e.cues.join(" ")+'</p>' : '')
+            + (e.note ? '<p class="s-cue">※ '+e.note+'</p>' : '') + '</div>';
+        }).join("") + '</div></div>';
+  }).join("");
+  document.getElementById("bySession").innerHTML = html;
+}
+
+/* ---------- 공통 ---------- */
+function goto(id){
+  var el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+}
+var bar = document.querySelector(".stickybar");
+function sizeBar(){ document.documentElement.style.setProperty("--sticky-h", bar.offsetHeight+"px"); }
+function show(id, btn){
+  document.querySelectorAll(".view").forEach(function(v){ v.classList.toggle("on", v.id===id); });
+  document.querySelectorAll(".tab").forEach(function(t){ t.setAttribute("aria-selected", t===btn?"true":"false"); });
+  document.getElementById("partChips").hidden = (id!=="gym");
+  document.getElementById("jumpPart").hidden  = (id!=="byPart");
+  sizeBar(); window.scrollTo({top:0});
+}
+renderByPart(); renderBySession(); renderGym(); sizeBar();
+window.addEventListener("resize", sizeBar);
+var tt = document.getElementById("totop");
+window.addEventListener("scroll", function(){ tt.classList.toggle("on", window.scrollY>500); });
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js").catch(function () {});
+  });
+}
+</script>
+</body></html>
