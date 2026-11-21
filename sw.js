@@ -1,6 +1,6 @@
 /* PT 트레이닝 노트 — 오프라인 캐시
    노트를 갱신할 때는 아래 VERSION 숫자만 올리면 기기에서 자동으로 새 버전을 받습니다. */
-const VERSION = 'pt-note-v27';
+const VERSION = 'pt-note-v37';
 const CORE = [
   './',
   './index.html',
